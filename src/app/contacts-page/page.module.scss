@@ -1,0 +1,61 @@
+@import 'styles/variables';
+
+.main h1 {
+    margin: 0;
+    color: white;
+    background-color:  gray;
+}
+
+.ContactsPage {
+    background-color: gray;
+    border-radius: 10px;
+    padding: 20px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 80%;
+}
+
+.ContactsPage p {
+    color: white;
+}
+
+.ContactsPage h1 {
+    color: white;
+}
+
+.ContactsPage li {
+    color: white;
+}
+
+.ContactsPage button {
+    background-color: rgb(103, 99, 99);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.ContactsPage button:hover {
+    background-color: rgba(115, 114, 114, 0.8);
+}
+
+.MicrophoneIcon{
+    position: fixed;
+    bottom: 20px;
+    right: 50px;
+    bottom: 50px;
+    border: 3px solid black;
+    border-radius: 50%;
+    padding: 10px;
+    background-color: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.MicrophoneIconButton{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}
