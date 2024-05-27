@@ -459,12 +459,12 @@ export const InputProvider = ({ children }: { children: React.ReactNode }) => {
             <div className={styles.content}>
                 {children}
                 <div className={styles.microphoneContainer}>
-                    <div className={styles.MicrophoneIcon}>
+                    <div className={`${styles.MicrophoneIcon} ${voiceToggle ? styles.active : ''}`} onClick={toggleVoiceRecognition}>
                         <Image src={microphoneImage} alt="Microphone Image" width={50} height={50}/>
                     </div>
                     <div className={styles.MicrophoneIconButton}>
                         <button onClick={toggleVoiceRecognition}>
-                            Voice Recognition: {voiceToggle ? 'On' : 'Off'}
+                            Voice Recognition: <span className={styles.bold}>{voiceToggle ? 'ON' : 'OFF'}</span>
                         </button>
                     </div>
                     <div className={`${styles.microphoneTranscript} ${assistantListening || assistantFeedback ? styles.visible : ''}`}>
