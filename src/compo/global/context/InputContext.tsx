@@ -202,6 +202,7 @@ export const InputProvider = ({ children }: { children: React.ReactNode }) => {
 
     const stopListening = () => {
         SpeechRecognition.abortListening();
+        SpeechRecognition.stopListening();
     }
 
     const pickingUpTimeoutRef = useRef<NodeJS.Timeout | null>(null);
