@@ -215,7 +215,7 @@ export const InputProvider = ({ children }: { children: React.ReactNode }) => {
     const voiceTimerRef = useRef<NodeJS.Timeout | null>(null);
     const feedbackTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-    const firstWords = ['a', 'me', 'i', 'hi', 'hey', 'hello', 'high', 'hay']
+    const firstWords = ['a', 'me', 'i', 'hi', 'hey', 'hello', 'high', 'hay', 'aye']
 
     const secondWords = ['cook'];
 
