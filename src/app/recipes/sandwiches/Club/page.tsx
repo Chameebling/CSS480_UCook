@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './page.module.scss';  // Ensure you have the corresponding CSS module for styles
 import { useInput } from 'compo/global/context/InputContext';
+import { scrollBodyDown, scrollBodyUp } from 'util/scrollBody';
 
 export default function Club() {
     const router = useRouter();
@@ -30,10 +31,20 @@ export default function Club() {
             visual: 'Set as Recipe'
         });
 
+        addVoiceRoute('scroll up', 'Okay, I have scrolled up.', scrollBodyUp, {
+            visual: 'Scroll Up'
+        });
+
+        addVoiceRoute('scroll down', 'Okay, I have scrolled down.', scrollBodyDown, {
+            visual: 'Scroll Down'
+        });
+
         return () => {
             // Remove voice route when component is unmounted
             removeVoiceRoute('call screen');
             removeVoiceRoute('set recipe');
+removeVoiceRoute('scroll up');
+removeVoiceRoute('scroll down');
         }
     }, []);
 
