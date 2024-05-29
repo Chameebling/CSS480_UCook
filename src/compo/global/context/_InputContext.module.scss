@@ -49,6 +49,7 @@
     border-radius: 50%;
     padding: 10px;
     background-color: white;
+    transition: background-color 0.3s;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
     cursor: pointer;
     
@@ -77,6 +78,14 @@
         &:after {
             content: unset;
         }
+    }
+
+    &.pickup {
+        background-color: lime;
+    }
+
+    &.halfway {
+        background-color: yellow;
     }
 }
 
@@ -177,4 +186,39 @@
         }
     }
 
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 1000;
+    display: none;
+
+    .popup {
+        border: 1px solid black;
+        background-color: lightgray;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: calc(100% - 20px);
+        max-width: 500px;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+
+        height: calc(100% - 40px);
+        max-height: 300px;
+        
+        overflow: hidden auto;
+
+    }
+
+    &.visible {
+        display: block;
+    }
 }

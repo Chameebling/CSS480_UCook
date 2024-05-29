@@ -155,9 +155,12 @@ export const InputProvider = ({ children }: { children: React.ReactNode }) => {
     const audioFailRef = useRef<HTMLAudioElement | null>(null);
     const audioProcessRef = useRef<HTMLAudioElement | null>(null);
 
-    const {transcript, listening, resetTranscript, browserSupportsSpeechRecognition} = useSpeechRecognition();
+    const {transcript, interimTranscript, finalTranscript, resetTranscript, isMicrophoneAvailable} = useSpeechRecognition();
     
+    const [browserSupported, setBrowserSupported] = useState(true);
+
     const [voiceToggle, setVoiceToggle] = useState(false);
+    const [pickingUp, setPickingUp] = useState(false);
 
     const [sanitizedTranscript, setSanitizedTranscript] = useState('');
 
@@ -167,7 +170,7 @@ export const InputProvider = ({ children }: { children: React.ReactNode }) => {
     const [assistantFeedback, setAssistantFeedback] = useState(false);
     const [assistantMessage, setAssistantMessage] = useState([]);
 
-    const residualTranscript = useRef<string | null>(null);
+    const [halfway, setHalfway] = useState(false);
 
     const lastWakeupIndex = useRef<number | null>(null);
     const wakeupLenRef = useRef<number | null>(null);
@@ -199,6 +202,14 @@ export const InputProvider = ({ children }: { children: React.ReactNode }) => {
 
     const stopListening = () => {
         SpeechRecognition.abortListening();
+    }
+
+    const pickingUpTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    const pulsePickup = () => {
+        setPickingUp(true);
+        clearTimeout(pickingUpTimeoutRef.current);
+        pickingUpTimeoutRef.current = setTimeout(()=>setPickingUp(false), 100);
     }
 
     const voiceTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -233,6 +244,23 @@ export const InputProvider = ({ children }: { children: React.ReactNode }) => {
         callback: ()=>{setVoiceToggle(false)},
         visual: "Mute"
     }
+
+    useEffect(()=>{
+
+        if(!window.webkitSpeechRecognition){
+            setBrowserSupported(false);
+            return;
+        }
+
+        const recognition = new window.webkitSpeechRecognition();
+        recognition.continuous = true;
+
+        if(!recognition.continuous){
+            setBrowserSupported(false);
+            return;
+        }
+
+    }, []);
 
     useEffect(()=>{
 
@@ -339,6 +367,12 @@ export const InputProvider = ({ children }: { children: React.ReactNode }) => {
         const lastWord = words[words.length-1].toLowerCase().replace(/[^\w\s]|_/g, '');
         const secondLastWord = words[words.length-2].toLowerCase().replace(/[^\w\s]|_/g, '');
 
+        if(firstWords.includes(lastWord)){
+            setHalfway(true);
+        }else{
+            setHalfway(false);
+        }
+
         console.log([secondLastWord, lastWord]);
 
         if(firstWords.includes(secondLastWord) && secondWords.includes(lastWord)){
@@ -382,10 +416,16 @@ export const InputProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         if (sanitizedTranscript) {
+            pulsePickup();
             processPassiveTranscript(transcript);
             console.log('Transcript:',transcript);
         }
     }, [sanitizedTranscript]);
+
+    useEffect(()=>{
+        if(transcript || interimTranscript || finalTranscript)
+            pulsePickup();
+    }, [transcript, interimTranscript, finalTranscript]);
 
     useEffect(() => {
 
@@ -447,6 +487,24 @@ export const InputProvider = ({ children }: { children: React.ReactNode }) => {
 
     return (
         <InputContext.Provider value={api}>
+            <div className={`${styles.overlay} ${!browserSupported ? styles.visible : ''}`}>
+                <div className={styles.popup}>
+                    <h2>Speech Recognition Unavailable</h2>
+                    <p>It seems that your browser does not support continuous speech recognition. Please use a different browser to access this feature.</p>
+                    <p>Supported browsers include:</p>
+                    <ul>
+                        <li>Google Chrome</li>
+                        <li>Microsoft Edge</li>
+                        <li>Apple Safari</li>
+                    </ul>
+                </div>
+            </div>
+            <div className={`${styles.overlay} ${!isMicrophoneAvailable ? styles.visible : ''}`}>
+                <div className={styles.popup}>
+                    <h2>Microphone Unavailable</h2>
+                    <p>It seems that your microphone is not available. Please check your microphone settings and try again.</p>
+                </div>
+            </div>
             <audio ref={audioWakeRef} src="/sounds/cook_wakeup.mp3"/>
             <audio ref={audioFailRef} src="/sounds/cook_fail.mp3"/>
             <audio ref={audioProcessRef} src="/sounds/cook_process.mp3"/>
@@ -459,7 +517,7 @@ export const InputProvider = ({ children }: { children: React.ReactNode }) => {
             <div className={styles.content}>
                 {children}
                 <div className={styles.microphoneContainer}>
-                    <div className={`${styles.MicrophoneIcon} ${voiceToggle ? styles.active : ''}`} onClick={toggleVoiceRecognition}>
+                    <div className={`${styles.MicrophoneIcon} ${voiceToggle ? styles.active : ''} ${pickingUp ? styles.pickup : ''} ${halfway ? styles.halfway : ''}`} onClick={toggleVoiceRecognition}>
                         <Image src={microphoneImage} alt="Microphone Image" width={50} height={50}/>
                     </div>
                     <div className={styles.MicrophoneIconButton}>

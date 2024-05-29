@@ -44,8 +44,9 @@ export default function Home() {
                   effortlessly browse through different recipes and cookbooks!
                 </p>
                 <hr/>
-                <p>To use the voice assistant, say &quot;Hi Cook&quot; and then your request.</p>
-                <p>To list all available commands for the current page, say &quot;Help&quot; to the voice assistant!</p>
+                <p>To use the voice assistant, say &quot;Hi Cook&quot;, &quot;Hey Cook&quot; or &quot;Hello Cook&quot; and then your request.</p>
+                <p>To list all available commands for the current page, say &quot;Hi Cook, Help&quot; to the voice assistant!</p>
+                <p>To check that your voice is being picked up, the microphone icon should pulse green when it detects audio.</p>
                 <hr/>
                 <p>To start cooking, press continue or say &quot;Hi Cook, Press Continue&quot;!</p>
 
